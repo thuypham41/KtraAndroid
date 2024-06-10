@@ -5,9 +5,15 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,11 +21,14 @@ import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.appcontact.model.DatabaseHelper;
+
+import java.io.IOException;
 
 public class UnitAdd extends AppCompatActivity {
     private static final int REQUEST_CODE_SELECT_AVATAR = 1;
@@ -28,7 +37,7 @@ public class UnitAdd extends AppCompatActivity {
     EditText unitCode, unitName, unitEmail, unitWebsite, unitPhone, unitAddress, parentId;
     Button saveUnitButton, selectLogoButton;
     ImageView unitLogo;
-    Uri selectedImageUri; // Add this line
+    Uri selectedImageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,13 +80,9 @@ public class UnitAdd extends AppCompatActivity {
                 String phone = unitPhone.getText().toString();
                 String parent_id = parentId.getText().toString();
 
-                // Create an instance of DatabaseHelper
                 DatabaseHelper dbHelper = new DatabaseHelper(UnitAdd.this);
-
-                // Get writable database
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-                // Insert values
                 ContentValues values = new ContentValues();
                 values.put(DatabaseHelper.COLUMN_UNIT_NAME, name);
                 values.put(DatabaseHelper.COLUMN_UNIT_EMAIL, email);
@@ -86,17 +91,12 @@ public class UnitAdd extends AppCompatActivity {
                 values.put(DatabaseHelper.COLUMN_UNIT_PHONE, phone);
                 values.put(DatabaseHelper.COLUMN_UNIT_PARENT_ID, parent_id);
 
-                if (selectedImageUri != null) { // Check for selected image URI
+                if (selectedImageUri != null) {
                     values.put(DatabaseHelper.COLUMN_UNIT_LOGO, selectedImageUri.toString());
                 }
 
-                // Insert the new row
                 db.insert(DatabaseHelper.TABLE_UNITS, null, values);
-
-                // Close the database
                 db.close();
-
-                // Finish the activity
                 finish();
             }
         });
@@ -108,21 +108,40 @@ public class UnitAdd extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_SELECT_AVATAR && resultCode == RESULT_OK && data != null) {
-            selectedImageUri = data.getData(); // Get the URI of the selected image
-            unitLogo.setImageURI(selectedImageUri); // Display the selected image in the ImageView
-        }
-    }
+            selectedImageUri = data.getData();
+            unitLogo.setImageURI(selectedImageUri);
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CODE_READ_EXTERNAL_STORAGE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                openGallery();
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
+                int sizeInDp = 120;
+                int sizeInPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, sizeInDp, getResources().getDisplayMetrics());
+
+                Bitmap squareBitmap = Bitmap.createScaledBitmap(bitmap, sizeInPx, sizeInPx, true);
+                Bitmap circleBitmap = Bitmap.createBitmap(sizeInPx, sizeInPx, Bitmap.Config.ARGB_8888);
+                Canvas canvas = new Canvas(circleBitmap);
+                Paint paint = new Paint();
+                paint.setAntiAlias(true);
+                canvas.drawCircle(sizeInPx / 2f, sizeInPx / 2f, sizeInPx / 2f, paint);
+                paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+                canvas.drawBitmap(squareBitmap, 0, 0, paint);
+
+                unitLogo.setImageBitmap(circleBitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
+
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        if (requestCode == REQUEST_CODE_READ_EXTERNAL_STORAGE) {
+//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                openGallery();
+//            }
+//        }
+//    }
 }
