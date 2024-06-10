@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/unitCode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Unit Code" />
+
+    <EditText
+        android:id="@+id/unitName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Unit Name" />
+
+    <EditText
+        android:id="@+id/unitEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Unit Email" />
+
+    <EditText
+        android:id="@+id/unitWebsite"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Unit Website" />
+
+    <ImageView
+        android:id="@+id/unitLogo"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/ic_launcher" />
+
+    <Button
+        android:id="@+id/selectLogoButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Select Logo" />
+
+    <EditText
+        android:id="@+id/unitAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Unit Address" />
+
+    <EditText
+        android:id="@+id/unitPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Unit Phone" />
+
+    <EditText
+        android:id="@+id/parentId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Parent Unit ID" />
+
+    <Button
+        android:id="@+id/saveUnitButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="saveUnit"
+        android:text="Save Unit" />
+</LinearLayout>
