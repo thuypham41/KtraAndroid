@@ -6,8 +6,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    private static final String DATABASE_NAME = "contact_management.db";
-    private static final int DATABASE_VERSION = 1;
+    public static final String DATABASE_NAME = "contact_management.db";
+    public static final int DATABASE_VERSION = 1;
 
     // Table and column names for units
     public static final String TABLE_UNITS = "units";
@@ -31,7 +31,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_EMPLOYEE_UNIT_ID = "unit_id";
 
     // Create table statements
-    private static final String TABLE_CREATE_UNITS =
+    public static final String TABLE_CREATE_UNITS =
             "CREATE TABLE " + TABLE_UNITS + " (" +
                     COLUMN_UNIT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     COLUMN_UNIT_NAME + " TEXT, " +
@@ -42,7 +42,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     COLUMN_UNIT_PHONE + " TEXT, " +
                     COLUMN_UNIT_PARENT_ID + " INTEGER" + ");";
 
-    private static final String TABLE_CREATE_EMPLOYEES =
+    public static final String TABLE_CREATE_EMPLOYEES =
             "CREATE TABLE " + TABLE_EMPLOYEES + " (" +
                     COLUMN_EMPLOYEE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     COLUMN_EMPLOYEE_NAME + " TEXT, " +
